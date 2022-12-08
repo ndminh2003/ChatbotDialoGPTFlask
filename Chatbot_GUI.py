@@ -36,14 +36,14 @@ class ChatBot:
         # generated a response while limiting the total chat history to 1000 tokens,
         self.chat_history_ids = model.generate(self.bot_input_ids, max_length=1000,
                                                pad_token_id=tokenizer.eos_token_id)
-        # last ouput tokens from bot
+        # last output tokens from bot
         response = tokenizer.decode(self.chat_history_ids[:, self.bot_input_ids.shape[-1]:][0],
                                     skip_special_tokens=True)
         # in case, bot fails to answer
         if response == "":
             response = self.random_response()
         # print bot response
-        return '🤖 DaiMinh: ' + response
+        return '🤖 Bot: ' + response
 
     # in case there is no response from model
     def random_response(self):

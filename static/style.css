@@ -79,3 +79,8 @@ h3 {
     right:0;
     width: 300px;
 }
+.center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
