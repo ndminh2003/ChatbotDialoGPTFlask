@@ -2,11 +2,29 @@ from flask import Flask, render_template, request
 import numpy as np
 from transformers import AutoModelForCausalLM, AutoTokenizer
 import torch
-
+from Adafruit_IO import MQTTClient
 # download and cache tokenizer
-tokenizer = AutoTokenizer.from_pretrained("microsoft/DialoGPT-large")
+tokenizer = AutoTokenizer.from_pretrained("microsoft/DialoGPT-medium")
 # download and cache pre-trained model
-model = AutoModelForCausalLM.from_pretrained("microsoft/DialoGPT-large")
+model = AutoModelForCausalLM.from_pretrained("microsoft/DialoGPT-medium")
+
+ADAFRUIT_IO_KEY = 'aio_nXXF37zYHKY9nrryoIckQNLbcThE'
+
+# Set to your Adafruit IO username.
+# (go to https://accounts.adafruit.com to find your username)
+ADAFRUIT_IO_USERNAME = 'DaiMinh'
+
+# Shared IO Feed
+# Make sure you have read AND write access to this feed to publish.
+IO_FEED = 'bot-chat'
+
+
+# IO Feed Owner's username
+IO_FEED_USERNAME = 'DaiMinh'
+
+client = MQTTClient(ADAFRUIT_IO_USERNAME, ADAFRUIT_IO_KEY)
+client.connect()
+client.loop_background()
 
 
 class ChatBot:
@@ -43,6 +61,7 @@ class ChatBot:
         if response == "":
             response = self.random_response()
         # print bot response
+        client.publish(IO_FEED, response)
         return '🤖 Bot: ' + response
 
     # in case there is no response from model
@@ -64,7 +83,7 @@ class ChatBot:
         # not a question? answer suitably
         else:
             reply = np.random.choice(["Great",
-                                      "Fine. What's up?",
+                                      "What the f is up with you ?",
                                       "Okay", "The f**k", "Wanna die bruh ?"
                                       ])
         return reply
